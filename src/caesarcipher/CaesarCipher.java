@@ -79,6 +79,10 @@ public class CaesarCipher {
                 } catch (InterruptedException | ExecutionException ex) {
 
                 }
+            } else if (input.equalsIgnoreCase("clear")) {
+                probabilities.clear();
+                updateFileWithProbabilities(new File("src\\Training.txt"), probabilities);
+                System.exit(0);
             } else {
                 try {
                     shift = Integer.parseInt(input);
