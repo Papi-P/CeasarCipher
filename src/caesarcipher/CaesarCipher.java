@@ -19,7 +19,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
@@ -81,7 +83,7 @@ public class CaesarCipher {
                 }
             } else if (input.equalsIgnoreCase("clear")) {
                 probabilities.clear();
-                updateFileWithProbabilities(new File("src\\Training.txt"), probabilities);
+                updateFileWithProbabilities(new File("src\\Training.txt"), probabilities.entrySet());
                 es.shutdown();
                 System.exit(0);
             } else {
@@ -95,18 +97,13 @@ public class CaesarCipher {
 
         if (shift == 0) {
             trainDictionary(sToCrypt);
-            updateFileWithProbabilities(new File("src\\Training.txt"), probabilities);
+            updateFileWithProbabilities(new File("src\\Training.txt"), probabilities.entrySet());
             es.shutdown();
             System.exit(0);
         }
         String encrypted = shiftCharacter(sToCrypt, shift);
-        System.out.println(encrypted);
-        //System.out.println("------------------------------------------");
-        String[] broken = breakCode(encrypted);
-        for (String s : broken) {
-            //System.out.println(s);
-        }
-        SortedSet<Map.Entry<String, Integer>> likelyStrings = determineBestOption(broken);
+        System.out.println("Encrypted: " + encrypted);
+        SortedSet<Map.Entry<String, Integer>> likelyStrings = determineBestOption(breakCode(encrypted));
         String outputString = "";
         Iterator<Entry<String, Integer>> it = likelyStrings.iterator();
         StringBuilder sb = new StringBuilder("");
@@ -123,11 +120,17 @@ public class CaesarCipher {
         System.out.println("-------------------------------------------------------");
         System.out.println("Most likely:\n" + outputString);
         long initTime = System.currentTimeMillis();
-        updateFileWithProbabilities(new File("src\\Training.txt"), probabilities);
+        updateFileWithProbabilities(new File("src\\Training.txt"), probabilities.entrySet());
         System.out.println(System.currentTimeMillis() - initTime);
         es.shutdown();
     }
 
+    /**
+     *
+     * @param s
+     * @param shift
+     * @return
+     */
     public static String encrypt(String s, int shift) {
         if (s == null || s.isEmpty()) {
             throw new IllegalArgumentException("Attemped to encrypt an empty string!");
@@ -157,6 +160,12 @@ public class CaesarCipher {
         return output;
     }
 
+    /**
+     *
+     * @param s
+     * @param shift
+     * @return
+     */
     public static String decrypt(String s, int shift) {
         if (s == null || s.isEmpty()) {
             throw new IllegalArgumentException("Attemped to encrypt an empty string!");
@@ -186,6 +195,12 @@ public class CaesarCipher {
         return output;
     }
 
+    /**
+     *
+     * @param s
+     * @param shift
+     * @return
+     */
     public static String shiftCharacter(String s, int shift) {
         if (s == null || s.isEmpty()) {
             throw new IllegalArgumentException("Attemped to encrypt an empty string!");
@@ -313,6 +328,12 @@ public class CaesarCipher {
         return words;
     }
 
+    /**
+     *
+     * @param input
+     * @param knownWords
+     * @return
+     */
     public static SortedSet<Map.Entry<String, Integer>> determineBestOption(String[] input, String... knownWords) {
         TreeMap<String, Integer> likelyhood = new TreeMap<>();
         for (String s : input) {
@@ -355,6 +376,10 @@ public class CaesarCipher {
         return output;
     }
 
+    /**
+     *
+     * @param words
+     */
     public static void trainDictionary(String words) {
         //remove extra whitespaces and split the words, then loop through them
         for (String w : words.trim().replaceAll("\\s\\s", "\\s").split("\\s")) {
@@ -374,7 +399,26 @@ public class CaesarCipher {
         }
     }
 
-    public static boolean updateFileWithProbabilities(File f, TreeMap<String, Integer> map) {
+    /**
+     *
+     * @param f
+     * @param set
+     * @return
+     */
+    public static boolean updateFileWithProbabilities(File f, Set<Entry<String, Integer>> set) {
+        //sort entries first by probability, and then by name.
+        SortedSet sorted = new TreeSet(new Comparator<Entry<String, Integer>>() {
+            @Override
+            public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+                int intCompare = o2.getValue().compareTo(o1.getValue());
+                if (intCompare == 0) {
+                    return o2.getKey().compareTo(o1.getKey());
+                }
+                return intCompare;
+            }
+
+        });
+        sorted.addAll(set);
         //make any directories or files needed to write
         f.getParentFile().mkdirs();
         if (!f.exists()) {
@@ -386,8 +430,7 @@ public class CaesarCipher {
         }
         try {
             FileWriter fw = new FileWriter(f);
-            //BufferedWriter bw = new BufferedWriter(fw);
-            Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
+            Iterator<Entry<String, Integer>> it = sorted.iterator();
             while (it.hasNext()) {
                 Entry<String, Integer> pair = it.next();
                 fw.write(pair.getKey() + "\t" + pair.getValue() + "\n");
@@ -397,6 +440,43 @@ public class CaesarCipher {
             return false;
         }
         return true;
+    }
+
+    public static String decrypt(String s, String shift) {
+
+        return "";
+    }
+}
+
+class Expression {
+
+    final static char add = '+';
+    final static char subtract = '-';
+    final static char multiple = '*';
+    final static char divide = '/';
+    final static char exponent = '^';
+
+    public static double evaluate(String s) {
+        double total = 0;
+        int openBracket = -1;
+        int closeBracket = -1;
+        int depth = 0;
+        for (int i = 0; i < s.length(); i++) {
+            // Brackets, exponents, division, multiplation, addition, subtraction
+
+            // Brackets
+            if (s.charAt(i) == '(' && openBracket == -1) {
+                openBracket = i;
+                depth++;
+            }
+            if (s.charAt(i) == ')' && closeBracket == -1) {
+                closeBracket = i;
+                depth--;
+            }
+            total+=evaluate(s.substring(openBracket, closeBracket+1));
+
+        }
+        return total;
     }
 
 }
