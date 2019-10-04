@@ -33,9 +33,9 @@ public class CaesarCipher {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        Expression exp = new Expression("15+3");
-        //System.out.println(exp.getAnswer());
+
+        Expression exp = new Expression("2 ^ (2+(2^4))");
+        System.out.println(exp.getAnswer());
         System.exit(0);
         ExecutorService es = Executors.newCachedThreadPool();
         Future<TreeMap<String, Integer>> f = es.submit(new Callable() {
@@ -186,6 +186,4 @@ public class CaesarCipher {
         }
         return output;
     }
-
-    
 }

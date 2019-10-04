@@ -5,6 +5,7 @@
  */
 package caesarcipher;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -16,13 +17,17 @@ public class Expression {
 
     double answer = 0;
     String expression = "";
+    HashMap<String, Double> variables = new HashMap<>();
+
+    Stack<Double> values = new Stack<>();
+    Stack<Character> operators = new Stack<>();
+    Stack<Double> powers = new Stack<>();
 
     public Expression(String expression) {
         if (expression == null) {
             throw new NullPointerException("Expression cannot be null!");
         }
         this.expression = expression;
-        this.solve();
     }
     static final HashMap<Character, Integer> OPERATOR_PRIORITIES = new HashMap<>();
 
@@ -33,6 +38,7 @@ public class Expression {
         OPERATOR_PRIORITIES.put('+', 1);
         OPERATOR_PRIORITIES.put('-', 1);
     }
+
     /* 1. While there are still tokens to be read in,
      *    1.1 Get the next token.
      *      1.2 If the token is:
@@ -63,98 +69,73 @@ public class Expression {
      * 3. At this point the operator stack should be empty, and the value stack
      *    should have only one value in it, which is the final result.
      */
-
     private void solve() {
-        Stack<Double> values = new Stack<>();
-        Stack<Character> operators = new Stack<>();
         String curNum = "";
-        //While there are still tokens to be read in,
         for (int i = 0; i < expression.length(); i++) {
-            //Get the next token.
             char curChar = expression.charAt(i);
-            //If the token is:
+
             if (Character.isSpaceChar(curChar)) {
                 continue;
             }
-            //A number: push it onto the value stack.
+            System.out.println("curChar: " + curChar);
             if (Character.isDigit(curChar)) {
                 curNum += curChar;
-            } else {
+            }
+            if ((!Character.isDigit(curChar) || i == expression.length() - 1) && !curNum.isEmpty()) {
                 values.push(Double.parseDouble(curNum));
                 curNum = "";
-            } 
-            //A variable: get its value, and push onto the value stack.
-            //A left parenthesis: push it onto the operator stack.
+            }
             if (curChar == '(') {
-                operators.push(curChar);
-            } 
-            //A right parenthesis:
-            if (curChar == ')') {
-                //While the thing on top of the operator stack is not a left parenthesis,
-                while(operators.peek()!= '(') {
-                    //Pop the value stack twice, getting two operands.
-                    Double num1 = values.pop();
-                    Double num2 = values.pop();
-                    //Pop the operator from the operator stack.
-                    Character operation = operators.pop();
-                    double result = 0;
-                    //Apply the operator to the operands, in the correct order.
-                    switch (operation) {
-                        case '+':
-                            result = num2 + num1;
-                            break;
-                        case '-':
-                            result = num2 - num1;
-                            break;
-                        case '*':
-                            result = num2 * num1;
-                            break;
-                        case '/':
-                            result = num2 / num1;
-                            break;
-                        case '^':
-                            result = Math.pow(num2, num1);
-                            break;
+                int openBracket = i+1;
+                int closeBracket = 0;
+                int depth = 1;
+                for(int z = i+1; z < expression.length(); z++){
+                    if(expression.charAt(z) == '('){
+                        depth++;
                     }
-                    //Push the result onto the value stack.
-                    values.push(result);
+                    if(expression.charAt(z) == ')'){
+                        depth--;
+                    }
+                    if(depth == 0){
+                        closeBracket = z-1;
+                        values.add(new Expression(expression.substring(openBracket, z)).getAnswer());
+                        break;
+                    }
                 }
-                //Pop the left parenthesis from the operator stack, and discard it.
-                operators.pop();
-            } if (OPERATOR_PRIORITIES.containsKey(curChar)){
-                //An operator (call it thisOp):
-                //While the operator stack is not empty, and the top thing on the operator stack has the same or greater precedence as thisOp,
-                //Pop the operator from the operator stack.
-                //Pop the value stack twice, getting two operands.
-                //Apply the operator to the operands, in the correct order.
-                //Push the result onto the value stack.
+                i = closeBracket;
+           // } //else if (curChar == ')') {
+              //  if(i > 0 && Character.isDigit(expression.charAt(i-1))){
+               //     operators.push('*');
+              //  }
+              // while (!operators.empty() && operators.peek() != '(') {
+              //      values.push(getResultFromOperation());
+              //  }
+            } else if (OPERATOR_PRIORITIES.containsKey(curChar)) {
+                while (!operators.isEmpty() && (!OPERATOR_PRIORITIES.containsKey(operators.peek()) || OPERATOR_PRIORITIES.get(curChar) <= OPERATOR_PRIORITIES.get(operators.peek()))) {
+                    double result = getResultFromOperation();
+                    values.push(result);
+
+                }
+                operators.push(curChar);
+
+                if (curChar != '^') {
+                    if (powers.size() > 0) {
+                        while (powers.size() > 1) {
+                            Double pow1 = powers.pop();
+                            Double pow2 = powers.pop();
+                            System.out.println("1: " + pow1 + "\n2: " + pow2);
+                            powers.add(0, Math.pow(pow1, pow2));
+                        }
+                        values.push(powers.pop());
+                    }
+                }
+
             }
         }
         while (!operators.isEmpty()) {
-            Double num1 = values.pop();
-            Double num2 = values.pop();
-            Character operation = operators.pop();
-            double result = 0;
-            switch (operation) {
-                case '+':
-                    result = num2 + num1;
-                    break;
-                case '-':
-                    result = num2 - num1;
-                    break;
-                case '*':
-                    result = num2 * num1;
-                    break;
-                case '/':
-                    result = num2 / num1;
-                    break;
-                case '^':
-                    result = Math.pow(num2, num1);
-                    break;
-            }
-            values.push(result);
+            values.push(getResultFromOperation());
         }
-        this.answer = values.firstElement();
+        this.answer = values.peek();
     }
 
     public String getExpression() {
@@ -164,5 +145,58 @@ public class Expression {
     public Double getAnswer() {
         this.solve();
         return this.answer;
+    }
+
+    private Double getResultFromOperation() {
+        double result = 0;
+        Character operation = operators.isEmpty() ? '+' : operators.pop();
+        Double num1, num2;
+        switch (operation) {
+            case '+':
+                num1 = values.pop();
+                if (values.isEmpty()) {
+                    return num1;
+                }
+                num2 = values.pop();
+                result = num2 + num1;
+                //System.out.println(num2 + "+" + num1 + "=" + result);
+                break;
+            case '-':
+                num1 = values.pop();
+                if (values.isEmpty()) {
+                    return num1;
+                }
+                num2 = values.pop();
+                result = num2 - num1;
+                //System.out.println(num2 + "-" + num1 + "=" + result);
+                break;
+            case '*':
+                num1 = values.pop();
+                if (values.isEmpty()) {
+                    return num1;
+                }
+                num2 = values.pop();
+                result = num2 * num1;
+                //System.out.println(num2 + "x" + num1 + "=" + result);
+                break;
+            case '/':
+                num1 = values.pop();
+                if (values.isEmpty()) {
+                    return num1;
+                }
+                num2 = values.pop();
+                result = num2 / num1;
+                //System.out.println(num2 + "/" + num1 + "=" + result);
+                break;
+            case '^':
+                num1 = values.pop();
+                if (values.isEmpty()) {
+                    return num1;
+                }
+                num2 = values.pop();
+                result = Math.pow(num2, num1);
+        }
+
+        return result;
     }
 }
