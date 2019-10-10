@@ -1,3 +1,6 @@
+/*
+ * © 2019 Daniel Allen
+ */
 package cipher;
 
 import static cipher.Driver.*;
@@ -12,6 +15,7 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -28,8 +32,10 @@ import javax.swing.JOptionPane;
 public class Dictionary {
 
     //Stores a dictionary. The stored key is a word, and the value associated is the likelyhood of that word being used. When a word is used, the probability of that word goes up.
-    static TreeMap<String, Integer> probabilities = new TreeMap<>();
-
+    public static TreeMap<String, Integer> probabilities = new TreeMap<>();
+    public static TreeMap<String, Integer> getProbabilityMap(){
+        return new TreeMap<>(probabilities);
+    }
     /**
      * Obtains a new dictionary from
      * <a href="http://m.uploadedit.com/bbtc/1569095384146.txt">
@@ -55,7 +61,7 @@ public class Dictionary {
     }
 
     /**
-     *
+     * Trains the dictionary by adding a word to the dictionary if it isn't there, and adding 1 to its probability if it is.
      * @param words
      */
     public static void trainDictionary(String words) {
@@ -69,21 +75,25 @@ public class Dictionary {
             String s = w.toUpperCase();
 
             //if the dictionary contains the word, add 1 to the probability. If it doesn't, add the word and then set the probability to 1.
+
             if (probabilities.containsKey(s)) {
+                System.out.println(s + " before: "+probabilities.get(s));
                 probabilities.replace(s, probabilities.get(s) + 1);
+                System.out.println(s + " after: "+probabilities.get(s));
             } else {
                 probabilities.put(s, 1);
+                System.out.println("Added "+s+": "+probabilities.get(s));
             }
         }
     }
 
     /**
-     *
-     * @param f
-     * @param set
-     * @return
+     * Sends the list provided to the file specified.
+     * @param f The file to write to
+     * @param set The list to write
+     * @return if the operation was successful.
      */
-    public static boolean updateFileWithProbabilities(File f, Set<Map.Entry<String, Integer>> set) {
+    public static boolean updateFileWithProbabilities(File f, Set<Entry<String, Integer>> set) {
         //sort entries first by probability, and then by name.
         SortedSet sorted = new TreeSet(new Comparator<Map.Entry<String, Integer>>() {
             @Override
@@ -97,7 +107,7 @@ public class Dictionary {
 
         });
         sorted.addAll(set);
-        //make any directories or files needed to write
+        //make any directories or files needed to write to prevent errors
         f.getParentFile().mkdirs();
         if (!f.exists()) {
             try {
@@ -107,12 +117,15 @@ public class Dictionary {
             }
         }
         try {
+            //create a filewriter and iterator
             FileWriter fw = new FileWriter(f);
             Iterator<Map.Entry<String, Integer>> it = sorted.iterator();
             while (it.hasNext()) {
+                //loop all elements in the iterator and write them to the file
                 Map.Entry<String, Integer> pair = it.next();
                 fw.write(pair.getKey().toUpperCase() + "\t" + pair.getValue() + "\n");
             }
+            //close the writer
             fw.close();
         } catch (IOException ex) {
             return false;
@@ -179,6 +192,9 @@ public class Dictionary {
         return words;
     }
 
+    /**
+     *
+     */
     public static void newDictionary() {
         f = es.submit(new Callable() {
             @Override
@@ -195,9 +211,11 @@ public class Dictionary {
         }
     }
 
+    /**
+     *
+     */
     public static void clearDictionary() {
         probabilities.clear();
         updateFileWithProbabilities(new File("src\\Training.txt"), probabilities.entrySet());
     }
-
 }

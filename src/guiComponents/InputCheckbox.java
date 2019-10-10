@@ -1,10 +1,16 @@
+/*
+ * © 2019 Daniel Allen
+ */
 package guiComponents;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,6 +19,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 /**
@@ -20,7 +28,24 @@ import javax.swing.JComponent;
  * @author Daniel Allen
  */
 public class InputCheckbox extends JComponent {
+    private boolean locked = false;
+    public InputCheckbox setLock(boolean lock){
+        this.locked = lock;
+        return this;
+    }
+    public InputCheckbox setLock(boolean lock, boolean displayDisabledCursor){
+        this.locked = lock;
+        if(displayDisabledCursor)
+            try {
+                this.setCursor(Cursor.getSystemCustomCursor("Invalid.32x32"));
+        } catch (AWTException | HeadlessException ex) {
 
+        }
+        return this;
+    }
+    public boolean isLocked(){
+        return this.locked;
+    }
     boolean onTop() {
         return true;
     }
@@ -212,7 +237,7 @@ public class InputCheckbox extends JComponent {
         }
         return this;
     }
-    
+
     public InputCheckbox setSelected(boolean sel){
         this.selected = sel;
         this.positionToSlideTo = (isSelected() ? this.getWidth() / 2 - 1 : 0);
@@ -220,7 +245,7 @@ public class InputCheckbox extends JComponent {
         paintImmediately(0, 0, this.getWidth(), this.getHeight());
         return this;
     }
-    
+
     public boolean isSelected() {
         return this.selected;
     }
@@ -288,12 +313,14 @@ public class InputCheckbox extends JComponent {
     public boolean allowsRapid(){
         return this.allowRapid;
     }
-    
+
     public void clickEvent() {
-        if (curXPosOfSwitch == positionToSlideTo  || allowRapid) {
-            toggleSelected();
-            if (switchStyle) {
-                transitionPosition(10, 5, 0.05);
+        if(!isLocked()){
+            if (curXPosOfSwitch == positionToSlideTo  || allowRapid) {
+                toggleSelected();
+                if (switchStyle) {
+                    transitionPosition(10, 5, 0.05);
+                }
             }
         }
     }

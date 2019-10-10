@@ -4,12 +4,15 @@
 package guiComponents;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.AbstractAction;
@@ -103,7 +106,7 @@ public abstract class InputButton extends JButton {
         init();
     }
 
-    //initialize the component. This doesn't need to be called manually, or ever after the field is initialized.
+    //initialize the component
     private void init() {
         setOpaque(false);
         this.setContentAreaFilled(false);
@@ -114,6 +117,18 @@ public abstract class InputButton extends JButton {
                 onClick();
             }
         });
+        this.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bgColor = hoverColor;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bgColor = getBackground();
+            }
+        });
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 //</editor-fold>
 
@@ -184,7 +199,7 @@ public abstract class InputButton extends JButton {
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         }
 
-        g2d.setColor(getBackground());
+        g2d.setColor(bgColor);
         g2d.fillRoundRect(1, 1, getWidth() - 1, getHeight() - 1, curve, curve);
 
         g.drawImage(buffer, 0, 0, null);
@@ -215,6 +230,7 @@ public abstract class InputButton extends JButton {
 
     public InputButton setBg(Color bg) {
         this.setBackground(bg);
+        bgColor = bg;
         return this;
     }
 
@@ -265,6 +281,14 @@ public abstract class InputButton extends JButton {
         }
         return fieldShape.contains(x, y);
     }
-
+    private Color hoverColor;
+    private Color bgColor;
+    public InputButton setHoverColor(Color h){
+        this.hoverColor = h;
+        return this;
+    }
+    public Color getHoverColor(){
+        return this.hoverColor;
+    }
     public abstract void onClick();
 }

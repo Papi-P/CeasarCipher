@@ -1,3 +1,6 @@
+/*
+ * © 2019 Daniel Allen
+ */
 package guiComponents;
 
 import static cipher.Decrypt.*;
@@ -76,25 +79,29 @@ public class TextPanel extends JPanel {
         cryptButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
                 .setFg(Color.WHITE)
-                .setAntialiased(true);
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
 
         autoDecodeButton.setText("Auto-decode");
         autoDecodeButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
                 .setFg(Color.WHITE)
-                .setAntialiased(true);
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
 
         getNewDictionaryButton.setText("Reset Dictionary");
         getNewDictionaryButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
                 .setFg(Color.WHITE)
-                .setAntialiased(true);
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
 
         eraseDictionaryButton.setText("Erase Dictionary");
         eraseDictionaryButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
                 .setFg(Color.WHITE)
-                .setAntialiased(true);
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
 
         this.setLayout(gbl);
         JPanel container = new JPanel();

@@ -1,29 +1,15 @@
+/*
+ * © 2019 Daniel Allen
+ */
 package guiComponents;
 
-import cipher.Driver;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
+import static cipher.Dictionary.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -36,7 +22,7 @@ public class GUI extends JFrame {
     private GridBagConstraints gbc = new GridBagConstraints();
 
     public TextPanel textP = new TextPanel();
-    public ButtonPanel settings = new ButtonPanel();
+    public SettingsPanel settings = new SettingsPanel();
 
     public GUI() {
         this.setLayout(gbl);
@@ -57,8 +43,23 @@ public class GUI extends JFrame {
         this.setSize(900, 658);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(JOptionPane.showConfirmDialog(null, "Are you sure you want to close?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    e.getWindow().dispose();
+                    System.out.println("Saving dictionary...");
+                    updateFileWithProbabilities(new File("src\\Training.txt"), getProbabilityMap().entrySet());
+                    System.out.println("Dictionary saved");
+                    System.exit(0);
+                } else {
+
+                }
+            }
+
+        });
     }
 }
 

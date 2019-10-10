@@ -1,8 +1,10 @@
+/*
+ * © 2019 Daniel Allen
+ */
 package cipher;
 
 /*
     @author Daniel Allen
-    8-Oct-2019
  */
 public class MathException extends Exception {
 
@@ -54,7 +56,7 @@ public class MathException extends Exception {
             return "><";
         }
         String s = expression.substring(Math.max(0, this.location - 5), this.location)
-                + ">" + //expression.charAt(Math.min(this.location, this.expression.length()-1)) +
+                + ">" + expression.charAt(Math.min(this.location, this.expression.length()-1)) +
                 "<"
                 + expression.substring(Math.min(this.location+1, this.expression.length()));
         return s;
