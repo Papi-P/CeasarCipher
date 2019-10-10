@@ -25,6 +25,33 @@ import javax.swing.JPanel;
  */
 public class SettingsPanel extends JPanel {
 
+    public InputButton randomizeEquationButton = new InputButton() {
+        @Override
+        public void onClick() {
+            int terms = (int) Math.floor((Math.random() * 4) + 1);
+            System.out.println("Terms: " + terms);
+            // String[] term = new String[terms+1];
+            String output = "";
+            for (int i = terms; i > 0; i--) {
+
+                int coefficient = (int) (Math.round(Math.random() * 10));
+                if (coefficient != 0) {
+                    output += "" + (coefficient) + (i == 1 ? "x" : ("x^" + i));
+                    switch ((int) (Math.random() * 2)) {
+                        case 0:
+                            output += "+";
+                            break;
+                        case 1:
+                            output += "-";
+                            break;
+                    }
+                }
+                System.out.println("Term " + i + ": " + (coefficient) + (i == 1 ? "x" : ("x^" + i)));
+            }
+            output += "" + (Math.floor(Math.random() * 10));
+            equationField.setText(output);
+        }
+    };
     public InputField equationField = new InputField(150, 25, "Equation");
     public InputCheckbox reverseCode = new InputCheckbox(80, 40);
     public InputCheckbox maintainCharacters = new InputCheckbox(80, 40);
@@ -39,6 +66,14 @@ public class SettingsPanel extends JPanel {
 
     public SettingsPanel() {
         this.setLayout(gbl);
+
+        randomizeEquationButton.setText("Randomize Equation");
+        randomizeEquationButton.setCurve(20)
+                .setBg(Color.decode("#38A1F3"))
+                .setFg(Color.BLACK)
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
+
         equationField.setRegex("[0-9.?x+-/*^()]+$")
                 .setPlaceholder("Equation")
                 .setPadding(0, 5, 0, 0)
@@ -130,7 +165,8 @@ public class SettingsPanel extends JPanel {
         //gbl.rowWeights = new double[]{0.5, 0,5};
         gbc.gridx = 0;
         gbc.gridy = 0;
-
+        this.add(randomizeEquationButton);
+        gbc.gridy++;
         this.add(eqContainer, gbc);
         gbc.gridy++;
         this.add(toggleContainer, gbc);

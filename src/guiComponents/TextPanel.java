@@ -18,7 +18,7 @@ import javax.swing.JTextArea;
 /*
     @author Daniel Allen
     7-Oct-2019
-*/
+ */
 public class TextPanel extends JPanel {
 
     public JTextArea inputArea = new JTextArea("Input");
@@ -57,6 +57,7 @@ public class TextPanel extends JPanel {
             trainDictionary(inputArea.getText());
         }
     };
+
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(new Color(51, 51, 51));
@@ -108,7 +109,7 @@ public class TextPanel extends JPanel {
                 .setFg(Color.BLACK)
                 .setAntialiased(true)
                 .setHoverColor(Color.decode("#38A1F3").darker());
-        
+
         trainDictionaryButton.setText("Train Dictionary");
         trainDictionaryButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
@@ -117,12 +118,16 @@ public class TextPanel extends JPanel {
                 .setHoverColor(Color.decode("#38A1F3").darker());
 
         this.setLayout(gbl);
+        
         JPanel container = new JPanel();
+        
         container.add(cryptButton);
         container.add(autoDecodeButton);
+
         container.add(getNewDictionaryButton);
         container.add(eraseDictionaryButton);
         container.add(trainDictionaryButton);
+        
         container.setOpaque(false);
         gbc.gridy = 0;
         this.add(inputScroller, gbc);

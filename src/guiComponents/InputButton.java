@@ -196,7 +196,7 @@ public abstract class InputButton extends JComponent {
             Logger.getLogger(InputButton.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private Font font = new Font("Arial Rounded", Font.BOLD, 12);
+    private Font font = new Font("Arial Rounded", Font.BOLD, 11);
     int paddingX = 20;
     int paddingY = 10;
     int displaceY = 0;
@@ -234,7 +234,7 @@ public abstract class InputButton extends JComponent {
         }
 
         g2d.setColor(bgColor);
-        g2d.fillRoundRect(1, 1, getWidth() - 1, getHeight() - 1, curve, curve);
+        g2d.fillRoundRect(1, 1, getWidth() - 2, getHeight() - 2, curve, curve);
         g2d.setColor(getForeground());
         g2d.setFont(font);
         g2d.drawString(this.text,
@@ -261,7 +261,7 @@ public abstract class InputButton extends JComponent {
         }
 
         g2d.setColor(borderColor);
-        g2d.drawRoundRect(0, 0, getWidth(), getHeight(), curve, curve);
+        g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, curve, curve);
         g.drawImage(buffer, 0, 0, null);
         super.paintComponent(g);
     }
