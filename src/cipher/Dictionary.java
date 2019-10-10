@@ -77,12 +77,9 @@ public class Dictionary {
             //if the dictionary contains the word, add 1 to the probability. If it doesn't, add the word and then set the probability to 1.
 
             if (probabilities.containsKey(s)) {
-                System.out.println(s + " before: "+probabilities.get(s));
                 probabilities.replace(s, probabilities.get(s) + 1);
-                System.out.println(s + " after: "+probabilities.get(s));
             } else {
                 probabilities.put(s, 1);
-                System.out.println("Added "+s+": "+probabilities.get(s));
             }
         }
     }

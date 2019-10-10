@@ -51,6 +51,12 @@ public class TextPanel extends JPanel {
             clearDictionary();
         }
     };
+    public InputButton trainDictionaryButton = new InputButton() {
+        @Override
+        public void onClick() {
+            trainDictionary(inputArea.getText());
+        }
+    };
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(new Color(51, 51, 51));
@@ -78,28 +84,35 @@ public class TextPanel extends JPanel {
         cryptButton.setText("Encrypt");
         cryptButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
-                .setFg(Color.WHITE)
+                .setFg(Color.BLACK)
                 .setAntialiased(true)
                 .setHoverColor(Color.decode("#38A1F3").darker());
 
         autoDecodeButton.setText("Auto-decode");
         autoDecodeButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
-                .setFg(Color.WHITE)
+                .setFg(Color.BLACK)
                 .setAntialiased(true)
                 .setHoverColor(Color.decode("#38A1F3").darker());
 
         getNewDictionaryButton.setText("Reset Dictionary");
         getNewDictionaryButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
-                .setFg(Color.WHITE)
+                .setFg(Color.BLACK)
                 .setAntialiased(true)
                 .setHoverColor(Color.decode("#38A1F3").darker());
 
         eraseDictionaryButton.setText("Erase Dictionary");
         eraseDictionaryButton.setCurve(20)
                 .setBg(Color.decode("#38A1F3"))
-                .setFg(Color.WHITE)
+                .setFg(Color.BLACK)
+                .setAntialiased(true)
+                .setHoverColor(Color.decode("#38A1F3").darker());
+        
+        trainDictionaryButton.setText("Train Dictionary");
+        trainDictionaryButton.setCurve(20)
+                .setBg(Color.decode("#38A1F3"))
+                .setFg(Color.BLACK)
                 .setAntialiased(true)
                 .setHoverColor(Color.decode("#38A1F3").darker());
 
@@ -109,6 +122,7 @@ public class TextPanel extends JPanel {
         container.add(autoDecodeButton);
         container.add(getNewDictionaryButton);
         container.add(eraseDictionaryButton);
+        container.add(trainDictionaryButton);
         container.setOpaque(false);
         gbc.gridy = 0;
         this.add(inputScroller, gbc);

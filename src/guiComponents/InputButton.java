@@ -6,18 +6,26 @@ package guiComponents;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import javax.swing.AbstractAction;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 
 /**
@@ -25,11 +33,7 @@ import javax.swing.border.Border;
  *
  * @author Daniel Allen
  */
-public abstract class InputButton extends JButton {
-
-    //store the input restriction booleans.
-    private boolean numOnly = false;
-    private boolean allowDecimals = true;
+public abstract class InputButton extends JComponent {
 
     //<editor-fold defaultstate="collapsed" desc="Enums">
     enum Alignments {
@@ -109,29 +113,35 @@ public abstract class InputButton extends JButton {
     //initialize the component
     private void init() {
         setOpaque(false);
-        this.setContentAreaFilled(false);
+        //this.setContentAreaFilled(false);
         this.setFocusable(false);
-        this.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onClick();
-            }
-        });
-        this.addMouseListener(new MouseAdapter(){
+        this.setPreferredSize(new Dimension(
+                this.getWidth() / 2 - this.getFontMetrics(this.font).stringWidth(this.text) / 2 + this.paddingX,
+                (this.getHeight() - this.getFontMetrics(this.font).getHeight()) / 2 + this.getFontMetrics(this.font).getAscent() + this.paddingY
+        ));
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 bgColor = hoverColor;
+                repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 bgColor = getBackground();
+                repaint();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                onClick();
             }
         });
+
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
-//</editor-fold>
 
+//</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Padding">
     //padding methods and storage
     private Border padding = BorderFactory.createEmptyBorder();
@@ -179,6 +189,30 @@ public abstract class InputButton extends JButton {
     //<editor-fold defaultstate="collapsed" desc="Painting">
     private BufferedImage buffer = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
+    static {
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src\\guiComponents\\Helvetica.ttf")));
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(InputButton.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private Font font = new Font("Arial Rounded", Font.BOLD, 12);
+    int paddingX = 20;
+    int paddingY = 10;
+    int displaceY = 0;
+
+    @Override
+    public Font getFont() {
+        return this.font;
+    }
+
+    @Override
+    public void setFont(Font f) {
+        this.font = f;
+        this.setPreferredSize(new Dimension(this.getFontMetrics(this.font).stringWidth(text) + this.paddingX, this.getFontMetrics(this.font).getAscent() + this.paddingY));
+        repaint();
+    }
+
     /**
      * Paints the component. This should not be called manually, and should
      * instead use <code>repaint()</code>
@@ -201,7 +235,11 @@ public abstract class InputButton extends JButton {
 
         g2d.setColor(bgColor);
         g2d.fillRoundRect(1, 1, getWidth() - 1, getHeight() - 1, curve, curve);
-
+        g2d.setColor(getForeground());
+        g2d.setFont(font);
+        g2d.drawString(this.text,
+                this.getWidth() / 2 - g2d.getFontMetrics().stringWidth(this.text) / 2,
+                (this.getHeight() - g2d.getFontMetrics().getHeight()) / 2 + g2d.getFontMetrics(this.font).getAscent() + this.displaceY);
         g.drawImage(buffer, 0, 0, null);
         super.paintComponent(g);
     }
@@ -283,12 +321,39 @@ public abstract class InputButton extends JButton {
     }
     private Color hoverColor;
     private Color bgColor;
-    public InputButton setHoverColor(Color h){
+
+    public InputButton setHoverColor(Color h) {
         this.hoverColor = h;
         return this;
     }
-    public Color getHoverColor(){
+
+    public Color getHoverColor() {
         return this.hoverColor;
     }
+
     public abstract void onClick();
+
+    private String text = "Button";
+
+    public String getText() {
+        return this.text;
+    }
+
+    public InputButton setText(String text) {
+        this.text = text;
+        this.setPreferredSize(new Dimension(this.getFontMetrics(this.font).stringWidth(text) + this.paddingX, this.getFontMetrics(this.font).getAscent() + this.paddingY));
+        return this;
+    }
+
+    public boolean setProperty(String propertyname, Object value) {
+        try {
+            Method method = this.getClass().getMethod("set" + propertyname, Object.class);
+            if (method.getModifiers() == Modifier.PUBLIC) {
+                method.invoke(this, value);
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            return false;
+        }
+        return true;
+    }
 }
