@@ -12,14 +12,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-/*
-    @author Daniel Allen
-    4-Oct-2019
- */
 /**
  * Decryption class to store some of the key decryption methods used in the Cipher.
- * @author Daniel
+ * @author Daniel Allen
  */
 public class Decrypt {
 
