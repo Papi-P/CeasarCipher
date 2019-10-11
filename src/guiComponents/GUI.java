@@ -6,6 +6,7 @@ package guiComponents;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import static cipher.Dictionary.*;
+import cipher.Driver;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -49,10 +50,11 @@ public class GUI extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if(JOptionPane.showConfirmDialog(null, "Are you sure you want to close?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    e.getWindow().dispose();
+
                     System.out.println("Saving dictionary...");
                     updateFileWithProbabilities(new File("src\\Training.txt"), getProbabilityMap().entrySet());
                     System.out.println("Dictionary saved");
+                    Driver.es.shutdown();
                     System.exit(0);
                 } else {
 

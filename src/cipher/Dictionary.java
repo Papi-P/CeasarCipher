@@ -31,11 +31,13 @@ import javax.swing.JOptionPane;
  */
 public class Dictionary {
 
-    //Stores a dictionary. The stored key is a word, and the value associated is the likelyhood of that word being used. When a word is used, the probability of that word goes up.
+    //Stores a dictionary. The stored key is a word, and the associated value is the likelyhood of that word being used.
     public static TreeMap<String, Integer> probabilities = new TreeMap<>();
-    public static TreeMap<String, Integer> getProbabilityMap(){
+
+    public static TreeMap<String, Integer> getProbabilityMap() {
         return new TreeMap<>(probabilities);
     }
+
     /**
      * Obtains a new dictionary from
      * <a href="http://m.uploadedit.com/bbtc/1569095384146.txt">
@@ -61,7 +63,9 @@ public class Dictionary {
     }
 
     /**
-     * Trains the dictionary by adding a word to the dictionary if it isn't there, and adding 1 to its probability if it is.
+     * Trains the dictionary by adding a word to the dictionary if it isn't
+     * there, and adding 1 to its probability if it is.
+     *
      * @param words
      */
     public static void trainDictionary(String words) {
@@ -75,7 +79,6 @@ public class Dictionary {
             String s = w.toUpperCase();
 
             //if the dictionary contains the word, add 1 to the probability. If it doesn't, add the word and then set the probability to 1.
-
             if (probabilities.containsKey(s)) {
                 probabilities.replace(s, probabilities.get(s) + 1);
             } else {
@@ -86,6 +89,7 @@ public class Dictionary {
 
     /**
      * Sends the list provided to the file specified.
+     *
      * @param f The file to write to
      * @param set The list to write
      * @return if the operation was successful.
@@ -180,6 +184,7 @@ public class Dictionary {
             //add the word and probability to the TreeMap
             words.putIfAbsent(word, probability);
         }
+        //close all readers and streams
         bis.close();
         fis.close();
         read.close();
@@ -190,7 +195,7 @@ public class Dictionary {
     }
 
     /**
-     *
+     * Sets the probabilities to the default dictionary from a github file
      */
     public static void newDictionary() {
         f = es.submit(new Callable() {
@@ -209,7 +214,7 @@ public class Dictionary {
     }
 
     /**
-     *
+     * Erases all words from the dictionary
      */
     public static void clearDictionary() {
         probabilities.clear();

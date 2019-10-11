@@ -23,13 +23,15 @@ import java.util.concurrent.Future;
  */
 public class Driver {
 
+    //change this variable to use either the encode() and decode() methods, or just to use the shiftCharacter() method.
+    final static boolean useMultiDirectionalMethod = true;
+
     static Future f;
-    static ExecutorService es;
+    public static ExecutorService es = Executors.newCachedThreadPool();
     public static GUI gui;
 
     public static void main(String[] args) {
         //load a dictionary from a file. Uses a callable to prevent the GUI from showing until the dictionary is ready.
-        es = Executors.newCachedThreadPool();
         f = es.submit(new Callable() {
             @Override
             public TreeMap<String, Integer> call() throws Exception {
@@ -54,18 +56,23 @@ public class Driver {
         //get the input and equation as a string
         String textToEncode = gui.textP.inputArea.getText();
         String equation = gui.settings.equationField.getText();
-        //detect if the equation is simple. If so, pass it to the encrypt() or decrypt() method.
+        //detect if the equation is simple. If so, pass it to the shiftCharacter(), encrypt(), or decrypt() method.
         if (textToEncode.length() > 0 && (equation.matches("[0-9-]+$") || (equation.length() > 1 && !equation.substring(1).matches("[^0-9]+$") && equation.charAt(0) == '-') || equation.trim().isEmpty())) {
             if (equation.trim().isEmpty()) {
                 equation = "0";
             }
             try {
-                String encoded = "";
-                //detect if the shift value is negative or not to determine if it should be encrypted or decrypted. This should be replaced with the two-way method shiftCharacter(), but the criteria specified otherwise.
-                if (equation.charAt(0) != '-') {
-                    encoded = encrypt(textToEncode, Integer.parseInt(equation));
+                String encoded;
+                //if the multi-directional method should be used, use it. If not, determine whether to use the encrypt() or decrypt() method.
+                if (useMultiDirectionalMethod) {
+                    encoded = shiftCharacter(textToEncode, Integer.parseInt(equation));
                 } else {
-                    encoded = decrypt(textToEncode, Integer.parseInt(equation.substring(1)));
+                    //detect if the shift value is negative or not to determine if it should be encrypted or decrypted.
+                    if (equation.charAt(0) != '-') {
+                        encoded = encrypt(textToEncode, Integer.parseInt(equation));
+                    } else {
+                        encoded = decrypt(textToEncode, Integer.parseInt(equation.substring(1)));
+                    }
                 }
                 //set the text to the output
                 gui.textP.outputArea.setText(encoded);
@@ -79,14 +86,11 @@ public class Driver {
                 //set the text to the output
                 gui.textP.outputArea.setText(encoded);
             } catch (MathException e) {
-                gui.textP.outputArea.setText(e.getMessage()+"\n"+e.getStylizedError());
-            } catch (Exception e){
+                gui.textP.outputArea.setText(e.getMessage() + "\n" + e.getStylizedError());
+            } catch (Exception e) {
                 gui.textP.outputArea.setText("Error: " + e.getMessage());
             }
         }
     }
-
-
-
 
 }
