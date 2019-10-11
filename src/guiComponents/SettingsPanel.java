@@ -19,41 +19,91 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-/*
-    @author Daniel Allen
-    7-Oct-2019
+/**
+ * JPanel to hold the equation and other options
+ *
+ * @author Daniel
  */
 public class SettingsPanel extends JPanel {
 
+    /**
+     * Generates a random equation when clicked and puts it in the equationField
+     *
+     * @see guiComponents.SettingsPanel#equationField
+     */
     public InputButton randomizeEquationButton = new InputButton() {
         @Override
         public void onClick() {
+            //generate the number of terms
             int terms = (int) Math.floor((Math.random() * 4) + 1);
             System.out.println("Terms: " + terms);
-            // String[] term = new String[terms+1];
             String output = "";
-            for (int i = terms; i > 0; i--) {
-
+            for (int i = terms; i >= 0; i--) {
+                //for each term, generate a coefficient.
                 int coefficient = (int) (Math.round(Math.random() * 10));
+                //if the coefficient is not 0
                 if (coefficient != 0) {
-                    output += "" + (coefficient) + (i == 1 ? "x" : ("x^" + i));
-                    switch ((int) (Math.random() * 2)) {
+                    output += (coefficient);
+                    switch (i) {
                         case 0:
-                            output += "+";
+                            //if i is 0, only add the coefficient
                             break;
                         case 1:
-                            output += "-";
+                            //if i is 1, don't add any exponent. Add only the coefficient and 'x'
+                            output += 'x';
+                            break;
+                        default:
+                            //otherwise, add the coefficient, 'x^', and i (the current exponent)
+                            output += "x^" + i;
                             break;
                     }
+                    //if i is greater than 0, add either a + or - to the output, randomly.
+                    if (i > 0) {
+                        switch ((int) (Math.random() * 2)) {
+                            case 0:
+                                output += "+";
+                                break;
+                            case 1:
+                                output += "-";
+                                break;
+                        }
+                    }
                 }
-                System.out.println("Term " + i + ": " + (coefficient) + (i == 1 ? "x" : ("x^" + i)));
             }
-            output += "" + (Math.floor(Math.random() * 10));
+            //if the output is empty (all coefficients were 0), rerun the method to try again.
+            if (output.trim().isEmpty()) {
+                onClick();
+            }
+            //if the final character is not a number or 'x', remove the last character from the output
+            if (!Character.isDigit(output.charAt(output.length() - 1)) && output.charAt(output.length() - 1) != 'x') {
+                output = output.substring(0, output.length() - 1);
+            }
+            //set the equationField to hold the output
             equationField.setText(output);
         }
     };
+
+    /**
+     * Holds a custom equation to be used in an Expression when encoded
+     *
+     * @see cipher.Encrypt#encrypt_from_equation(String, String)
+     * @see cipher.Expression
+     */
     public InputField equationField = new InputField(150, 25, "Equation");
+
+    /**
+     * Checkbox that controls if the equation is reversed.<br>
+     * <b>This is locked to 'disabled' and cannot be changed.</b>
+     *
+     * @see cipher.Expression#inverse()
+     */
     public InputCheckbox reverseCode = new InputCheckbox(80, 40);
+
+    /**
+     * Checkbox that controls whether to maintain character within their
+     * origin's type. <br>
+     * i.e.: <code>'Z' + 1 = 'A'</code> vs <code>'Z' + 1 = '['</code>
+     */
     public InputCheckbox maintainCharacters = new InputCheckbox(80, 40);
 
     @Override
@@ -64,6 +114,9 @@ public class SettingsPanel extends JPanel {
     GridBagLayout gbl = new GridBagLayout();
     GridBagConstraints gbc = new GridBagConstraints();
 
+    /**
+     * Default constructor
+     */
     public SettingsPanel() {
         this.setLayout(gbl);
 
@@ -162,7 +215,6 @@ public class SettingsPanel extends JPanel {
         keepContainer.add(keepLabel);
         keepContainer.add(maintainCharacters);
 
-        //gbl.rowWeights = new double[]{0.5, 0,5};
         gbc.gridx = 0;
         gbc.gridy = 0;
         this.add(randomizeEquationButton);

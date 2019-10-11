@@ -17,8 +17,8 @@ public class Expression {
     double answer = 0;
     private boolean solved = false;
     private String expression = "";
-    HashMap<String, Double> variables = new HashMap<>();
-    static final HashMap<Character, Integer> OPERATOR_PRIORITIES = new HashMap<>(5);
+    private HashMap<String, Double> variables = new HashMap<>();
+    private static final HashMap<Character, Integer> OPERATOR_PRIORITIES = new HashMap<>(5);
 
     static {
         OPERATOR_PRIORITIES.put('^', 3);
@@ -28,12 +28,12 @@ public class Expression {
         OPERATOR_PRIORITIES.put('-', 1);
     }
 
-
     Stack<Double> values = new Stack<>();
     Stack<Character> operators = new Stack<>();
 
     /**
      * Creates a math expression from a String
+     *
      * @param expression The equation
      */
     public Expression(String expression) {
@@ -45,6 +45,7 @@ public class Expression {
 
     /**
      * Creates a math expression from a String and allows the use of variables.
+     *
      * @param expression The equation
      * @param vars Map of variable names and their values.
      */
@@ -58,6 +59,7 @@ public class Expression {
 
     /**
      * Creates a math expression from a String and a variable <code>x</code>
+     *
      * @param expression The equation
      * @param x A variable
      */
@@ -65,7 +67,7 @@ public class Expression {
         if (expression == null) {
             throw new NullPointerException("Expression cannot be null!");
         }
-        this.expression = expression;//.replaceAll("x", ""+x);
+        this.expression = expression;
         HashMap<String, Double> vars = new HashMap<>();
         vars.put("x", x);
         this.variables = vars;
@@ -75,14 +77,21 @@ public class Expression {
     /**
      * Reverse the equation.<br>
      * i.e: <code>x^2</code> into <code>sqrt(x)</code>
+     *
      * @return
      */
-    public Expression inverse(){
+    public Expression inverse() {
         throw new UnsupportedOperationException("This has not yet been implemented.");
     }
 
     /**
-     * Solves the equation. This can be called at any time to skip the calculation with <code>getAnswer()</code>, immediately returning the result.
+     * Solves the equation. This can be called at any time to skip the
+     * calculation with <code>getAnswer()</code>, immediately returning the
+     * result. <br>
+     * <br>
+     * Todo: Replace comments. This was rewritten into a recursive method and
+     * comments were deleted since they no longer applied.
+     *
      * @see getAnswer()
      * @throws MathException if the Expression is not valid.
      */
@@ -110,16 +119,16 @@ public class Expression {
             }
 
             if (((!Character.isDigit(curChar) && curChar != '.') || i == expression.length() - 1) && !curNum.isEmpty()) {
-                try{
+                try {
                     values.push(Double.parseDouble(curNum));
-                } catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     throw new MathException(expression, i, "Error parsing number!");
                 } finally {
                     curNum = "";
                 }
             }
             if (curChar == '(') {
-                int openBracket = i+1;
+                int openBracket = i + 1;
                 int closeBracket = 0;
                 int depth = 1;
                 for (int z = i + 1; z < expression.length() && depth != 0; z++) {
@@ -133,8 +142,8 @@ public class Expression {
                         closeBracket = z - 1;
                         values.push(new Expression(expression.substring(openBracket, z), variables).getAnswer());
                     }
-                    if((z == expression.length()-1 && depth != 0 && expression.charAt(z) != ')') || (z == expression.length()-1 && depth < 0)){
-                        throw new MathException(expression, z+1, "Mismatched Braces");
+                    if ((z == expression.length() - 1 && depth != 0 && expression.charAt(z) != ')') || (z == expression.length() - 1 && depth < 0)) {
+                        throw new MathException(expression, z + 1, "Mismatched Braces");
                     }
                 }
                 i = closeBracket;
@@ -157,6 +166,12 @@ public class Expression {
         this.solved = true;
     }
 
+    /**
+     * Performs the operation on the top of the operator stack with the first
+     * two values on the value stack
+     *
+     * @return result of the next operation in the stack
+     */
     private Double getResultFromOperation() {
         double result = 0;
         Character operation = operators.isEmpty() ? '+' : operators.pop();
@@ -207,18 +222,22 @@ public class Expression {
     }
 
     /**
-     * Sets the equation in this Expression. If the equation is not identical to the current one, it will need to be solved before use.
+     * Sets the equation in this Expression. If the equation is not identical to
+     * the current one, it will need to be solved before use.
+     *
      * @param eq The equation
      */
-    public void setEquation(String eq){
-        if(!eq.equals(this.expression))
+    public void setEquation(String eq) {
+        if (!eq.equals(this.expression)) {
             this.solved = false;
+        }
         this.expression = eq;
 
     }
 
     /**
      * Gets the equation created in the constructor.
+     *
      * @return the equation.
      */
     public String getEquation() {
@@ -226,25 +245,31 @@ public class Expression {
     }
 
     /**
-     * Returns the answer of the expression. If the expression has not been solved yet, it will be solved before being returned.
+     * Returns the answer of the expression. If the expression has not been
+     * solved yet, it will be solved before being returned.
+     *
      * @return the answer of the expression.
      * @throws MathException
      */
     public Double getAnswer() throws MathException {
-        if(!solved)
+        if (!solved) {
             this.solve();
+        }
         return this.answer;
     }
 
     /**
-     * Returns the answer of the expression as an Integer. If the expression has not been solved yet, it will be solved before being returned.
+     * Returns the answer of the expression as an Integer. If the expression has
+     * not been solved yet, it will be solved before being returned.
+     *
      * @return the answer of the expression.
      * @throws MathException
      */
     public Integer getAnswerAsInt() throws MathException {
-        if(!solved)
+        if (!solved) {
             this.solve();
-        return (int)Math.round(this.answer);
+        }
+        return (int) Math.round(this.answer);
     }
 
 }

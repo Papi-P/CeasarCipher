@@ -17,14 +17,24 @@ import javax.swing.*;
  * @author Daniel Allen
  */
 public class GUI extends JFrame {
-
-    protected static boolean overlayEnabled = false;
     private GridBagLayout gbl = new GridBagLayout();
     private GridBagConstraints gbc = new GridBagConstraints();
 
+    /**
+     * TextPanel to contain the input area
+     * @see guiComponents.TextPanel
+     */
     public TextPanel textP = new TextPanel();
+
+    /**
+     * SettingsPanel to contain the settings
+     * @see guiComponents.SettingsPanel
+     */
     public SettingsPanel settings = new SettingsPanel();
 
+    /**
+     * Default constructor
+     */
     public GUI() {
         this.setLayout(gbl);
         gbl.columnWeights = new double[]{0.622, 0.288};

@@ -17,6 +17,10 @@ import java.util.TreeSet;
     @author Daniel Allen
     4-Oct-2019
  */
+/**
+ * Decryption class to store some of the key decryption methods used in the Cipher.
+ * @author Daniel
+ */
 public class Decrypt {
 
     /**
@@ -67,6 +71,7 @@ public class Decrypt {
                         }
                     }
                 }
+                //add the shifted character to the output
                 output += shiftedChar;
             } else {
                 output += c;
@@ -95,24 +100,29 @@ public class Decrypt {
         }
         String outputString = "";
         Iterator<Map.Entry<String, Integer>> it = likelyStrings.iterator();
-
-        //Ghost code was made for debugging. It just prints all possible decodings and their probabilies in order. (Yes this is messy but I didn't want to create a toggle-able debugging mode or get rid of this)
-
-        //StringBuilder sb = new StringBuilder("");
-        //for (int curPos = likelyStrings.size() - 1; curPos >= 0; curPos--) {
-        // Map.Entry<String, Integer> next = it.next();
-        // sb.append(next.getKey()).append(": ").append(next.getValue());
-        // if (curPos == likelyStrings.size() - 1) {
-        //set the output to the best option
-        outputString = it.next().getKey();
-        //  }
-        //  if (curPos > 0) {
-        //      sb.append("\n");
-        //   }
-        // }
-        // System.out.println("-------------------------------------------------------");
-        // System.out.println(sb.toString());
-        // System.out.println("Most likely:\n" + outputString);
+        //////////////////////////////////////////////////////////////////////////
+        //Ghost code was made for debugging. It just prints all possible        //
+        //decodings and their probabilies in order. (Yes this is messy but I    //
+        //didn't want to create a toggle-able debugging mode or get rid of this)//
+        //////////////////////////////////////////////////////////////////////////
+        //StringBuilder sb = new StringBuilder("");                             //
+        //for (int curPos = likelyStrings.size() - 1; curPos >= 0; curPos--) {  //
+        // Map.Entry<String, Integer> next = it.next();                         //
+        // sb.append(next.getKey()).append(": ").append(next.getValue());       //
+        // if (curPos == likelyStrings.size() - 1) {                            //
+        //                                                                      //
+        //set the output to the best option                                     //
+        outputString = it.next().getKey();                                      //
+        //  }                                                                   //
+        //  if (curPos > 0) {                                                   //
+        //      sb.append("\n");                                                //
+        //   }                                                                  //
+        // }                                                                    //
+        // System.out.println("--------------------------"                      //
+        // + "-----------------------------");                                  //
+        // System.out.println(sb.toString());                                   //
+        // System.out.println("Most likely:\n" + outputString);                 //
+        //////////////////////////////////////////////////////////////////////////
         //set the output field to the best option
         gui.textP.outputArea.setText(outputString);
     }
@@ -121,7 +131,10 @@ public class Decrypt {
      * Calculates all possible decode options
      *
      * @param input String to decode
-     * @return String[] of each possible option
+     *
+     * @see determineBestOption(String[], String...)
+     *
+     * @return String array of all possible shifts
      */
     public static String[] breakCode(String input) {
         //declare an empty array with the number of possible options
@@ -134,6 +147,15 @@ public class Decrypt {
         return output;
     }
 
+    /**
+     * Calculates the most likely String to be a decryption out of a provided array
+     * @param input Array of Strings to test
+     * @param knownWords Any pre-known words in the decrypted String
+     *
+     * @see breakCode(String)
+     *
+     * @return The most likely decryption of the String
+     */
     public static SortedSet<Map.Entry<String, Integer>> determineBestOption(String[] input, String... knownWords) {
         TreeMap<String, Integer> likelyhood = new TreeMap<>();
         for (String s : input) {

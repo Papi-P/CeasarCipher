@@ -19,38 +19,79 @@ import javax.swing.JTextArea;
     @author Daniel Allen
     7-Oct-2019
  */
+
+/**
+ *
+ * @author Daniel
+ */
+
 public class TextPanel extends JPanel {
 
+    /**
+     *
+     */
     public JTextArea inputArea = new JTextArea("Input");
+
+    /**
+     *
+     */
     public JScrollPane inputScroller = new JScrollPane(inputArea);
+
+    /**
+     *
+     */
     public JTextArea outputArea = new JTextArea("Output");
+
+    /**
+     *
+     */
     public JScrollPane outputScroller = new JScrollPane(outputArea);
     GridBagLayout gbl = new GridBagLayout();
     GridBagConstraints gbc = new GridBagConstraints();
+
+    /**
+     *
+     */
     public InputButton cryptButton = new InputButton() {
         @Override
         public void onClick() {
             cryptClick();
         }
     };
+
+    /**
+     *
+     */
     public InputButton autoDecodeButton = new InputButton() {
         @Override
         public void onClick() {
             attemptDecode();
         }
     };
+
+    /**
+     *
+     */
     public InputButton getNewDictionaryButton = new InputButton() {
         @Override
         public void onClick() {
             newDictionary();
         }
     };
+
+    /**
+     *
+     */
     public InputButton eraseDictionaryButton = new InputButton() {
         @Override
         public void onClick() {
             clearDictionary();
         }
     };
+
+    /**
+     *
+     */
     public InputButton trainDictionaryButton = new InputButton() {
         @Override
         public void onClick() {
@@ -66,6 +107,9 @@ public class TextPanel extends JPanel {
         g.drawLine(this.getWidth() - 1, 0, this.getWidth() - 1, this.getHeight());
     }
 
+    /**
+     *
+     */
     public TextPanel() {
         this.setSize(622, 622);
         Dimension fieldSize = new Dimension(500, 250);

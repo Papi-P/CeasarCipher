@@ -129,6 +129,7 @@ public class InputField extends JTextField {
      * @param left The padding at the left of the field.
      * @param bottom The padding at the bottom of the field.
      * @param right The padding at the right of the field.
+     * @return 
      */
     public InputField setPadding(int top, int left, int bottom, int right) {
         padding = BorderFactory.createEmptyBorder(top, left, bottom, right);
@@ -151,6 +152,7 @@ public class InputField extends JTextField {
      * Setter method to set whether the user can type only numbers or not.
      *
      * @param numOnly true to only allow numbers | false to allow anything.
+     * @return 
      */
     public InputField setNumbersOnly(boolean numOnly) {
         this.numOnly = numOnly;
@@ -168,6 +170,11 @@ public class InputField extends JTextField {
         return this.numOnly;
     }
 
+    /**
+     *
+     * @param regex
+     * @return
+     */
     public InputField setRegex(String regex) {
         this.allowDecimals = true;
         this.numOnly = false;
@@ -181,6 +188,7 @@ public class InputField extends JTextField {
      * Allow or disallow decimals in the field.
      *
      * @param dec True to allow decimals | False to disable them.
+     * @return 
      * @throws IllegalStateException if this attempts to set allowDecimals to
      * false before numbersOnly is true.
      * @see setNumbersOnly
@@ -239,6 +247,7 @@ public class InputField extends JTextField {
      * limit.
      *
      * @param min The minimum value this field can hold.
+     * @return 
      */
     public InputField setMinimum(Double min) {
         this.min = min;
@@ -250,6 +259,7 @@ public class InputField extends JTextField {
      * limit.
      *
      * @param max The maximum value this field can hold.
+     * @return 
      */
     public InputField setMaximum(Double max) {
         this.max = max;
@@ -282,6 +292,7 @@ public class InputField extends JTextField {
      * Setter method to set the curve of the corners of the field.
      *
      * @param curve The radius of the curve
+     * @return 
      */
     public InputField setCurve(int curve) {
         this.curve = curve;
@@ -296,6 +307,11 @@ public class InputField extends JTextField {
     ScheduledExecutorService ses;
     private boolean scrollingPlaceholder = true;
 
+    /**
+     *
+     * @param scroll
+     * @return
+     */
     public InputField setScrollingPlaceholder(boolean scroll) {
         this.scrollingPlaceholder = scroll;
         setPlaceholder(placeholder);
@@ -304,6 +320,11 @@ public class InputField extends JTextField {
 
     private long scrollDelay = 250;
 
+    /**
+     *
+     * @param speed
+     * @return
+     */
     public InputField setScrollSpeed(long speed) {
         this.scrollDelay = speed;
         setPlaceholder(placeholder);
@@ -315,6 +336,7 @@ public class InputField extends JTextField {
      * displays if the field has no input, and the placeholder is not empty.
      *
      * @param placeholder The text to display.
+     * @return 
      * @see getPlaceholder
      */
     public InputField setPlaceholder(String placeholder) {
@@ -431,35 +453,69 @@ public class InputField extends JTextField {
 //</editor-fold>
     private boolean antialias = false;
 
+    /**
+     *
+     * @param alias
+     * @return
+     */
     public InputField setAntialiased(boolean alias) {
         this.antialias = alias;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAntialiased() {
         return this.antialias;
     }
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     public InputField setDisabledColor(Color c) {
         super.setDisabledTextColor(c);
         return this;
     }
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     public InputField setEnabledColor(Color c) {
         super.setForeground(c);
         return this;
     }
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     public InputField setBackgroundColor(Color c) {
         super.setBackground(c);
         return this;
     }
 
+    /**
+     *
+     * @param bordCol
+     * @return
+     */
     public InputField setBorderColor(Color bordCol) {
         this.borderColor = bordCol;
         return this;
     }
 
+    /**
+     *
+     * @param weight
+     * @return
+     */
     public InputField setBorderWeight(int weight) {
         this.borderWeight = weight;
         return this;

@@ -9,6 +9,12 @@ import static cipher.Driver.gui;
     @author Daniel Allen
     4-Oct-2019
  */
+
+/**
+ *
+ * @author Daniel
+ */
+
 public class Encrypt {
 
     /**

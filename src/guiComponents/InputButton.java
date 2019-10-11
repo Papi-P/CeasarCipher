@@ -29,7 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.border.Border;
 
 /**
- * JTextField with convenient customization options.<br><br>
+ * Button with convenient customization options.<br><br>
  *
  * @author Daniel Allen
  */
@@ -63,8 +63,8 @@ public abstract class InputButton extends JComponent {
      *
      * @param width the width of the input field
      * @param height the height of the input field
-     * @param tooltip the tooltip that will display when the mouse hovers above
-     * the field.
+     * @param text the tooltip that will display when the mouse hovers above the
+     * field.
      *
      * @see setToolTipText
      */
@@ -92,8 +92,8 @@ public abstract class InputButton extends JComponent {
      * placeholder text, and the tooltip must be set using the
      * <code>setToolTipText()</code> method.
      *
-     * @param tooltip the tooltip that will display when the mouse hovers above
-     * the field.
+     * @param text the tooltip that will display when the mouse hovers above the
+     * field.
      *
      * @see setToolTipText
      */
@@ -154,6 +154,7 @@ public abstract class InputButton extends JComponent {
      * @param left The padding at the left of the field.
      * @param bottom The padding at the bottom of the field.
      * @param right The padding at the right of the field.
+     * @return
      */
     public InputButton setPadding(int top, int left, int bottom, int right) {
         padding = BorderFactory.createEmptyBorder(top, left, bottom, right);
@@ -178,6 +179,7 @@ public abstract class InputButton extends JComponent {
      * Setter method to set the curve of the corners of the field.
      *
      * @param curve The radius of the curve
+     * @return
      */
     public InputButton setCurve(int curve) {
         this.curve = curve;
@@ -261,27 +263,47 @@ public abstract class InputButton extends JComponent {
         }
 
         g2d.setColor(borderColor);
-        g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, curve, curve);
+        g2d.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, curve, curve);
         g.drawImage(buffer, 0, 0, null);
         super.paintComponent(g);
     }
 
+    /**
+     *
+     * @param bg
+     * @return
+     */
     public InputButton setBg(Color bg) {
         this.setBackground(bg);
         bgColor = bg;
         return this;
     }
 
+    /**
+     *
+     * @param fg
+     * @return
+     */
     public InputButton setFg(Color fg) {
         this.setForeground(fg);
         return this;
     }
 
+    /**
+     *
+     * @param bordCol
+     * @return
+     */
     public InputButton setBorderColor(Color bordCol) {
         this.borderColor = bordCol;
         return this;
     }
 
+    /**
+     *
+     * @param weight
+     * @return
+     */
     public InputButton setBorderWeight(int weight) {
         this.borderWeight = weight;
         return this;
@@ -289,11 +311,20 @@ public abstract class InputButton extends JComponent {
 
     private boolean antialias = false;
 
+    /**
+     *
+     * @param alias
+     * @return
+     */
     public InputButton setAntialiased(boolean alias) {
         this.antialias = alias;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAntialiased() {
         return this.antialias;
     }
@@ -309,7 +340,7 @@ public abstract class InputButton extends JComponent {
      *
      * @param x The X-coordinate of the point
      * @param y The Y-coordinate of the point
-     * @return
+     * @return true if this field contains the point
      */
     @Override
     public boolean contains(int x, int y) {
@@ -322,29 +353,56 @@ public abstract class InputButton extends JComponent {
     private Color hoverColor;
     private Color bgColor;
 
+    /**
+     *
+     * @param h
+     * @return
+     */
     public InputButton setHoverColor(Color h) {
         this.hoverColor = h;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public Color getHoverColor() {
         return this.hoverColor;
     }
 
+    /**
+     *
+     */
     public abstract void onClick();
 
     private String text = "Button";
 
+    /**
+     *
+     * @return
+     */
     public String getText() {
         return this.text;
     }
 
+    /**
+     *
+     * @param text
+     * @return
+     */
     public InputButton setText(String text) {
         this.text = text;
         this.setPreferredSize(new Dimension(this.getFontMetrics(this.font).stringWidth(text) + this.paddingX, this.getFontMetrics(this.font).getAscent() + this.paddingY));
         return this;
     }
 
+    /**
+     *
+     * @param propertyname
+     * @param value
+     * @return
+     */
     public boolean setProperty(String propertyname, Object value) {
         try {
             Method method = this.getClass().getMethod("set" + propertyname, Object.class);

@@ -6,49 +6,94 @@ package cipher;
 /*
     @author Daniel Allen
  */
+
+/**
+ *
+ * @author Daniel
+ */
+
 public class MathException extends Exception {
 
     int location = 0;
     String expression = "";
 
+    /**
+     *
+     */
     public MathException() {
         super();
     }
 
+    /**
+     *
+     * @param msg
+     */
     public MathException(String msg) {
         super(msg);
     }
 
+    /**
+     *
+     * @param loc
+     */
     public MathException(int loc) {
         super();
         this.location = loc;
     }
 
+    /**
+     *
+     * @param loc
+     * @param msg
+     */
     public MathException(int loc, String msg) {
         super(msg);
         this.location = loc;
     }
 
+    /**
+     *
+     * @param expression
+     * @param loc
+     * @param msg
+     */
     public MathException(String expression, int loc, String msg) {
         super(msg);
         this.location = loc;
         this.expression = expression;
     }
 
+    /**
+     *
+     * @param expression
+     * @param loc
+     */
     public MathException(String expression, int loc) {
         super();
         this.location = loc;
         this.expression = expression;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getErrorLocation() {
         return this.location;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getProblematicExpression() {
         return this.expression;
     }
 
+    /**
+     * Returns the string surrounding the source of the error, the source identified with &gt;&lt;
+     * @return String marking location of error
+     */
     public String getStylizedError() {
         System.out.println(this.location);
         System.out.println(this.expression.length());

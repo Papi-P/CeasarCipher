@@ -26,12 +26,28 @@ public class Driver {
     //change this variable to use either the encode() and decode() methods, or just to use the shiftCharacter() method.
     final static boolean useMultiDirectionalMethod = true;
 
+    /**
+     * Future to retrieve and store the dictionary as its being read.
+     */
     static Future f;
+
+    /**
+     * Cached thread pool to call callables, and manage Future {@link cipher.Driver#f}
+     * @see cipher.Driver#f
+     */
     public static ExecutorService es = Executors.newCachedThreadPool();
+
+    /**
+     * GUI for the user
+     */
     public static GUI gui;
 
+    /**
+     * Main method run from command line
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
-        //load a dictionary from a file. Uses a callable to prevent the GUI from showing until the dictionary is ready.
+        //load a dictionary from a file
         f = es.submit(new Callable() {
             @Override
             public TreeMap<String, Integer> call() throws Exception {
@@ -40,6 +56,7 @@ public class Driver {
             }
         });
         try {
+            //set the TreeMap<> to the Future once its available
             probabilities = (TreeMap<String, Integer>) f.get();
         } catch (InterruptedException | ExecutionException ex) {
             System.out.println(ex);
@@ -51,6 +68,7 @@ public class Driver {
 
     /**
      * Called from the GUI when the encrypt button is clicked.
+     * @see guiComponents.InputButton
      */
     public static void cryptClick() {
         //get the input and equation as a string
@@ -83,7 +101,7 @@ public class Driver {
             //if the equation is not simple, instead pass it to the encrypt_from_equation() method.
             try {
                 String encoded = encrypt_from_equation(textToEncode, equation);
-                //set the text to the output
+                //set the text to the output or to the error message is there is one
                 gui.textP.outputArea.setText(encoded);
             } catch (MathException e) {
                 gui.textP.outputArea.setText(e.getMessage() + "\n" + e.getStylizedError());
@@ -92,5 +110,4 @@ public class Driver {
             }
         }
     }
-
 }

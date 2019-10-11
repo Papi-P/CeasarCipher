@@ -31,18 +31,28 @@ import javax.swing.JOptionPane;
  */
 public class Dictionary {
 
-    //Stores a dictionary. The stored key is a word, and the associated value is the likelyhood of that word being used.
+    /**
+     * Stores a dictionary. The stored key is a word, and the associated value
+     * is the likelyhood of that word being used.
+     */
     public static TreeMap<String, Integer> probabilities = new TreeMap<>();
 
+    /**
+     * Returns a new TreeMap<String, Integer> with the same data as the
+     * dictionary in use.
+     *
+     * @return TreeMap<String, Integer> of a dictionary
+     *
+     * @see cipher.Dictionary#probabilities
+     */
     public static TreeMap<String, Integer> getProbabilityMap() {
         return new TreeMap<>(probabilities);
     }
 
     /**
-     * Obtains a new dictionary from
-     * <a href="http://m.uploadedit.com/bbtc/1569095384146.txt">
-     * http://m.uploadedit.com/bbtc/1569095384146.txt</a> to reset the local
-     * file.
+     * Obtains a new dictionary from the URL to reset the local file.
+     *
+     * @see cipher.Dictionary#probabilities
      *
      * @param url The URL to read from
      * @return TreeMap of each line downloaded from the URL
@@ -66,6 +76,7 @@ public class Dictionary {
      * Trains the dictionary by adding a word to the dictionary if it isn't
      * there, and adding 1 to its probability if it is.
      *
+     * @see cipher.Dictionary#probabilities
      * @param words
      */
     public static void trainDictionary(String words) {
@@ -195,9 +206,15 @@ public class Dictionary {
     }
 
     /**
-     * Sets the probabilities to the default dictionary from a github file
+     * Sets the probabilities to the default dictionary from a
+     * <a href="https://raw.githubusercontent.com/dwyl/english-words/master/words.txt">Github
+     * file</a>
+     *
+     * @see cipher.Dictionary#probabilities
+     * @see cipher.Dictionary#reloadDictionary(URL)
      */
     public static void newDictionary() {
+        //reload the dictionary and put it into a Future
         f = es.submit(new Callable() {
             @Override
             public TreeMap<String, Integer> call() throws Exception {
@@ -206,6 +223,7 @@ public class Dictionary {
             }
         });
         try {
+            //set probabilities to the future once its available
             probabilities = (TreeMap<String, Integer>) f.get();
             updateFileWithProbabilities(new File("src\\Training.txt"), probabilities.entrySet());
         } catch (InterruptedException | ExecutionException ex) {

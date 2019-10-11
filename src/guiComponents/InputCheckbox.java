@@ -29,10 +29,23 @@ import javax.swing.JComponent;
  */
 public class InputCheckbox extends JComponent {
     private boolean locked = false;
+
+    /**
+     *
+     * @param lock
+     * @return
+     */
     public InputCheckbox setLock(boolean lock){
         this.locked = lock;
         return this;
     }
+
+    /**
+     *
+     * @param lock
+     * @param displayDisabledCursor
+     * @return
+     */
     public InputCheckbox setLock(boolean lock, boolean displayDisabledCursor){
         this.locked = lock;
         if(displayDisabledCursor)
@@ -43,6 +56,11 @@ public class InputCheckbox extends JComponent {
         }
         return this;
     }
+
+    /**
+     *
+     * @return
+     */
     public boolean isLocked(){
         return this.locked;
     }
@@ -50,20 +68,38 @@ public class InputCheckbox extends JComponent {
         return true;
     }
 
+    /**
+     *
+     * @param width
+     * @param height
+     * @param tooltip
+     */
     public InputCheckbox(int width, int height, String tooltip) {
         this.setPreferredSize(new Dimension(width, height));
         init();
     }
 
+    /**
+     *
+     * @param width
+     * @param height
+     */
     public InputCheckbox(int width, int height) {
         init();
         this.setPreferredSize(new Dimension(width, height));
     }
 
+    /**
+     *
+     * @param tooltip
+     */
     public InputCheckbox(String tooltip) {
         init();
     }
 
+    /**
+     *
+     */
     public InputCheckbox() {
         init();
     }
@@ -92,22 +128,40 @@ public class InputCheckbox extends JComponent {
 
     private boolean switchStyle = true;
 
+    /**
+     *
+     * @param s
+     * @return
+     */
     public InputCheckbox setSwitch(boolean s) {
         this.switchStyle = s;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSwitch() {
         return this.switchStyle;
     }
 
     private int curve = 0;
 
+    /**
+     *
+     * @param curve
+     * @return
+     */
     public InputCheckbox setCurve(int curve) {
         this.curve = curve;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurve() {
         return this.curve;
     }
@@ -116,12 +170,24 @@ public class InputCheckbox extends JComponent {
     //<editor-fold defaultstate="collapsed" desc="Painting">
     private BufferedImage buffer = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
+    /**
+     *
+     * @param active
+     * @param inactive
+     * @return
+     */
     public InputCheckbox setKnobColors(Color active, Color inactive) {
         this.ACTIVE_KNOB = inactive;
         this.INACTIVE_KNOB = inactive;
         return this;
     }
 
+    /**
+     *
+     * @param active
+     * @param inactive
+     * @return
+     */
     public InputCheckbox setSlideColors(Color active, Color inactive) {
         this.ACTIVE_SLIDE = inactive;
         this.INACTIVE_SLIDE = inactive;
@@ -129,11 +195,20 @@ public class InputCheckbox extends JComponent {
     }
     private boolean doubleBuffered = true;
 
+    /**
+     *
+     * @param buf
+     * @return
+     */
     public InputCheckbox setBuffered(boolean buf) {
         this.doubleBuffered = buf;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isBuffered() {
         return this.doubleBuffered;
     }
@@ -207,11 +282,21 @@ public class InputCheckbox extends JComponent {
     }
     int currentPlaceholderPhaseShift = 0;
 
+    /**
+     *
+     * @param bordCol
+     * @return
+     */
     public InputCheckbox setBorderColor(Color bordCol) {
         this.BORDER_COLOR = bordCol;
         return this;
     }
 
+    /**
+     *
+     * @param weight
+     * @return
+     */
     public InputCheckbox setBorderWeight(float weight) {
         this.borderWeight = weight;
         return this;
@@ -221,6 +306,9 @@ public class InputCheckbox extends JComponent {
 
     private boolean selected = false;
 
+    /**
+     *
+     */
     public void toggleSelected() {
         if (isSelected()) {
             setSelectedSmooth(false);
@@ -229,6 +317,11 @@ public class InputCheckbox extends JComponent {
         }
     }
 
+    /**
+     *
+     * @param sel
+     * @return
+     */
     public InputCheckbox setSelectedSmooth(boolean sel) {
         boolean pre = this.selected;
         this.selected = sel;
@@ -238,6 +331,11 @@ public class InputCheckbox extends JComponent {
         return this;
     }
 
+    /**
+     *
+     * @param sel
+     * @return
+     */
     public InputCheckbox setSelected(boolean sel){
         this.selected = sel;
         this.positionToSlideTo = (isSelected() ? this.getWidth() / 2 - 1 : 0);
@@ -246,21 +344,37 @@ public class InputCheckbox extends JComponent {
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSelected() {
         return this.selected;
     }
 
     private boolean antialias = false;
 
+    /**
+     *
+     * @param alias
+     * @return
+     */
     public InputCheckbox setAntialiased(boolean alias) {
         this.antialias = alias;
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAntialiased() {
         return this.antialias;
     }
 
+    /**
+     *
+     */
     public void enterEvent() {
 
     }
@@ -268,6 +382,12 @@ public class InputCheckbox extends JComponent {
 
     private double accel = 0;
 
+    /**
+     *
+     * @param time
+     * @param step
+     * @param acceleration
+     */
     public void transitionPosition(long time, double step, double acceleration) {
         positionToSlideTo = 0;
         accel = 0;
@@ -306,14 +426,28 @@ public class InputCheckbox extends JComponent {
     }
 
     private boolean allowRapid = false;
+
+    /**
+     *
+     * @param rapid
+     * @return
+     */
     public InputCheckbox setAllowRapidUse(boolean rapid){
         this.allowRapid = rapid;
         return this;
     }
+
+    /**
+     *
+     * @return
+     */
     public boolean allowsRapid(){
         return this.allowRapid;
     }
 
+    /**
+     *
+     */
     public void clickEvent() {
         if(!isLocked()){
             if (curXPosOfSwitch == positionToSlideTo  || allowRapid) {
@@ -325,6 +459,9 @@ public class InputCheckbox extends JComponent {
         }
     }
 
+    /**
+     *
+     */
     public void exitEvent() {
 
     }
